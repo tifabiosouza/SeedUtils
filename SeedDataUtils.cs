@@ -35,7 +35,18 @@ namespace FSouzaSeedData
 
             foreach (var prop in entity.GetType().GetProperties())
             {
-                if (!prop.Name.EndsWith("Id"))
+                string column;
+                string attribute = prop.Name;
+                //TODO: identificar melhor estratégia para eliminar colunas não anotadas com [Column]
+                try
+                {
+                    column = Column(attribute, entity);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+                if (!attribute.EndsWith("Id"))
                     propsDic.Add(prop.GetValue(entity, null));
             }
             return propsDic.ToArray();
@@ -53,9 +64,19 @@ namespace FSouzaSeedData
 
             foreach (var prop in entity.GetType().GetProperties())
             {
+                string column;
                 string attribute = prop.Name;
+                //TODO: identificar melhor estratégia para eliminar colunas não anotadas com [Column]
+                try
+                {
+                    column = Column(attribute, entity);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
                 if (!attribute.EndsWith("Id"))
-                    propsDic.Add(Column(attribute, entity));
+                    propsDic.Add(column);
             }
             return propsDic.ToArray();
         }
